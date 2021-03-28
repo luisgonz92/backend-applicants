@@ -23,6 +23,36 @@ class FindUsersController
         $this->gitHubUsersRepository = $gitHubUsersRepository;
     }
 
+    public function format_and_load_file_(){
+        $profiles = fopen("C:\Users\Sincropool\Documents\prueba\backend-applicants-develop\data\profiles.csv", "r");
+        $users = fopen("C:\Users\Sincropool\Documents\prueba\backend-applicants-develop\data\users.csv", "r");
+        $prueba=1;
+        foreach ($profiles as $profile) {
+            foreach ($users as $user) {
+                if ($user->id === $profile->id) {
+                    return [
+                        'id' => $user->id,
+                        'login' => $user->login,
+                        'type' => $user->type,
+                        'profile' => [
+                            'name' => $profile->name,
+                            'company' => $profile->compay,
+                            'location' => $profile->location,
+                        ]
+                    ];
+                }
+            }
+        }
+
+    }
+
+    public api_connect(){
+        $URL	= 'https://api.github.com/users/osana-salud';
+        $rs 	= API::Authentication($URL.'authentication','usuario','clave');
+        $array  = API::JSON_TO_ARRAY($rs);
+        $token 	= $array['data']['APIKEY'];
+    }
+
     public function __invoke(Request $request, Response $response): Response
     {
         $query = $request->getQueryParams()['q'] ?? '';
